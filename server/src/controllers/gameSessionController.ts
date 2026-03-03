@@ -12,7 +12,7 @@ const createSessionSchema = z.object({
 });
 
 export class GameSessionController {
-  async getAll(req: AuthenticatedRequest, res: Response): Promise<void> {
+  async getAll(_req: AuthenticatedRequest, res: Response): Promise<void> {
     const sessions = await prisma.gameSession.findMany({
       where: {
         status: {
@@ -149,7 +149,7 @@ export class GameSessionController {
     }
 
     const existingParticipant = session.participants.find(
-      (p) => p.userId === userId
+      (p: { userId: string }) => p.userId === userId
     );
 
     if (existingParticipant) {

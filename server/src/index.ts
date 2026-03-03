@@ -52,7 +52,7 @@ app.use('/api/sessions', gameSessionRoutes);
 app.use('/api/ai', aiLimiter);
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
@@ -61,7 +61,7 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Socket.io
-const gameSocketHandler = new GameSocketHandler(server);
+new GameSocketHandler(server);
 
 // Start server
 const PORT = process.env.PORT || 3001;

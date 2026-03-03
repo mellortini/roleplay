@@ -20,7 +20,8 @@ interface SessionState {
   pendingChanges: boolean;
 }
 
-const sessionStates: Map<string, SessionState> = new Map();
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _sessionStates: Map<string, SessionState> = new Map();
 
 export class GameSocketHandler {
   private io: SocketIOServer<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
@@ -146,7 +147,7 @@ export class GameSocketHandler {
               sessionId,
               status: session.status,
               currentTurn: session.currentTurn,
-              participants: session.participants.map((p, index) => ({
+              participants: session.participants.map((p: typeof session.participants[0], index: number) => ({
                 id: p.user.id,
                 username: p.user.username,
                 character: {
@@ -378,7 +379,8 @@ export class GameSocketHandler {
     action: string,
     character: { id: string; name: string },
     target?: string,
-    params?: Record<string, unknown>
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _params?: Record<string, unknown>
   ): Promise<void> {
     try {
       // Rate limiting dla AI - max 10 zapytań na minutę na sesję
@@ -423,7 +425,7 @@ export class GameSocketHandler {
       if (!session) return;
 
       // Sprawdź czy akcja jest skierowana do NPC
-      let aiResponse: { content: string; type: 'narration' | 'dialogue' } | null = null;
+      let aiResponse: { content: string; type: 'narration' | 'dialogue' | 'combat' } | null = null;
 
       if (target) {
         const npc = await prisma.nPCCharacter.findFirst({
@@ -447,7 +449,7 @@ export class GameSocketHandler {
             storyContext: session.storyContext,
             previousMessages: recentMessages
               .reverse()
-              .map((m) => `${m.character?.name || 'Narrator'}: ${m.content}`),
+              .map((m: typeof recentMessages[0]) => `${m.character?.name || 'Narrator'}: ${m.content}`),
           });
         }
       }
@@ -462,6 +464,10 @@ export class GameSocketHandler {
       }
 
       // Zapisz odpowiedź AI jako wiadomość (z flagą isAiGenerated)
+      if (!aiResponse) {
+        return;
+      }
+      
       const aiMessage = await prisma.gameMessage.create({
         data: {
           sessionId,
