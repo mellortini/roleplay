@@ -19,12 +19,14 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileFilter = (_req: unknown, file: { mimetype: string }, cb: (error: Error | null, acceptFile: boolean) => void) => {
+import { FileFilterCallback } from 'multer';
+
+const fileFilter = (_req: unknown, file: { mimetype: string }, cb: FileFilterCallback) => {
   // Akceptuj tylko obrazki
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
-    cb(new Error('Tylko pliki obrazków są dozwolone'), false);
+    cb(new Error('Tylko pliki obrazków są dozwolone'));
   }
 };
 

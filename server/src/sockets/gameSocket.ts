@@ -15,13 +15,12 @@ import {
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // Store for session state in memory (optimization - avoids DB writes on every action)
-interface SessionState {
-  lastSnapshot: number;
-  pendingChanges: boolean;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _sessionStates: Map<string, SessionState> = new Map();
+// Reserved for future optimization
+// interface SessionState {
+//   lastSnapshot: number;
+//   pendingChanges: boolean;
+// }
+// const _sessionStates: Map<string, SessionState> = new Map();
 
 export class GameSocketHandler {
   private io: SocketIOServer<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
