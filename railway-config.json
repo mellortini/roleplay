@@ -1,0 +1,178 @@
+{
+  "projects": {
+    "server": {
+      "name": "roleplay-server",
+      "description": "Backend aplikacji Roleplay",
+      "root": "server",
+      "buildCommand": "npm run build",
+      "startCommand": "npm run start",
+      "variables": {
+        "DATABASE_URL": {
+          "description": "PostgreSQL connection string",
+          "required": true,
+          "note": "Railway doda automatycznie"
+        },
+        "JWT_SECRET": {
+          "description": "Secret key for JWT tokens",
+          "required": true,
+          "example": "wygeneruj: node generate-jwt-secret.js",
+          "minLength": 32
+        },
+        "CLIENT_URL": {
+          "description": "Frontend URL for CORS",
+          "required": true,
+          "example": "https://roleplayclient.up.railway.app"
+        },
+        "NODE_ENV": {
+          "description": "Environment",
+          "required": true,
+          "value": "production"
+        },
+        "PORT": {
+          "description": "Server port",
+          "required": false,
+          "value": "3000"
+        },
+        "ANTHROPIC_API_KEY": {
+          "description": "Anthropic API key for AI",
+          "required": false,
+          "example": "sk-ant-..."
+        },
+        "HUGGINGFACE_API_KEY": {
+          "description": "HuggingFace API key for AI",
+          "required": false,
+          "example": "hf_..."
+        },
+        "HUGGINGFACE_MODEL": {
+          "description": "HuggingFace model name",
+          "required": false,
+          "example": "meta-llama/Llama-2-7b-chat-hf"
+        }
+      },
+      "services": {
+        "database": {
+          "type": "PostgreSQL",
+          "required": true,
+          "description": "PostgreSQL database"
+        }
+      }
+    },
+    "client": {
+      "name": "roleplay-client",
+      "description": "Frontend aplikacji Roleplay",
+      "root": "client",
+      "buildCommand": "npm run build",
+      "startCommand": "npm run start",
+      "variables": {
+        "VITE_API_URL": {
+          "description": "Backend API URL",
+          "required": true,
+          "example": "https://roleplayserver.up.railway.app"
+        },
+        "VITE_SOCKET_URL": {
+          "description": "WebSocket URL",
+          "required": true,
+          "example": "https://roleplayserver.up.railway.app",
+          "note": "Będzie konwertowane na wss:// automatycznie"
+        }
+      }
+    }
+  },
+  "setup": {
+    "step1": {
+      "title": "Utwórz projekt SERVER",
+      "instructions": [
+        "Wejdź na railway.app",
+        "Kliknij 'New Project'",
+        "Wybierz 'Deploy from GitHub'",
+        "Wybierz swoje repozytorium",
+        "Ustaw root directory na 'server'"
+      ]
+    },
+    "step2": {
+      "title": "Dodaj PostgreSQL",
+      "instructions": [
+        "W projekcie kliknij '+ Add'",
+        "Wybierz 'Add Database'",
+        "Wybierz 'PostgreSQL'",
+        "Railway automatycznie doda DATABASE_URL"
+      ]
+    },
+    "step3": {
+      "title": "Ustaw zmienne SERVER",
+      "instructions": [
+        "Wejdź w Variables",
+        "Dodaj JWT_SECRET (wygeneruj: node generate-jwt-secret.js)",
+        "Dodaj CLIENT_URL = https://roleplayclient.up.railway.app",
+        "Dodaj NODE_ENV = production"
+      ]
+    },
+    "step4": {
+      "title": "Utwórz projekt CLIENT",
+      "instructions": [
+        "Wejdź na railway.app",
+        "Kliknij 'New Project'",
+        "Wybierz 'Deploy from GitHub'",
+        "Wybierz swoje repozytorium",
+        "Ustaw root directory na 'client'"
+      ]
+    },
+    "step5": {
+      "title": "Ustaw zmienne CLIENT",
+      "instructions": [
+        "Wejdź w Variables",
+        "Dodaj VITE_API_URL = https://roleplayserver.up.railway.app",
+        "Dodaj VITE_SOCKET_URL = https://roleplayserver.up.railway.app"
+      ]
+    },
+    "step6": {
+      "title": "Deploy",
+      "instructions": [
+        "Kliknij 'Deploy' w obu projektach",
+        "Czekaj na zakończenie deploymentu",
+        "Sprawdź logi jeśli coś pójdzie nie tak"
+      ]
+    }
+  },
+  "testing": {
+    "backend": {
+      "url": "https://roleplayserver.up.railway.app/api/health",
+      "expectedResponse": "{\"status\":\"ok\",\"timestamp\":\"...\"}"
+    },
+    "frontend": {
+      "url": "https://roleplayclient.up.railway.app",
+      "expectedResponse": "Login page should load"
+    },
+    "websocket": {
+      "instructions": [
+        "Otwórz frontend",
+        "Otwórz DevTools (F12)",
+        "Wejdź w Network → WS",
+        "Zaloguj się",
+        "Powinieneś zobaczyć wss://roleplayserver.up.railway.app"
+      ]
+    }
+  },
+  "troubleshooting": {
+    "websocket_not_connecting": {
+      "cause": "VITE_SOCKET_URL nie jest ustawiony lub jest zły",
+      "solution": "Sprawdź czy VITE_SOCKET_URL jest ustawiony w CLIENT Variables"
+    },
+    "cors_error": {
+      "cause": "CLIENT_URL nie jest ustawiony na SERVER",
+      "solution": "Sprawdź czy CLIENT_URL jest ustawiony w SERVER Variables"
+    },
+    "401_unauthorized": {
+      "cause": "JWT_SECRET jest inny na serwerze",
+      "solution": "Sprawdź czy JWT_SECRET jest ustawiony na SERVER"
+    },
+    "database_connection_failed": {
+      "cause": "DATABASE_URL nie jest ustawiony",
+      "solution": "Dodaj PostgreSQL do SERVER projektu"
+    },
+    "cannot_get_root": {
+      "cause": "Frontend nie jest zbudowany",
+      "solution": "Sprawdź build logs w Railway → Deployments"
+    }
+  }
+}

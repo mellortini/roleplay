@@ -8,7 +8,18 @@ import {
   PlayerInfo 
 } from '../types';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001';
+const SOCKET_URL = (() => {
+  const url = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001';
+  // Konwertuj https:// na wss:// dla WebSocket Secure
+  if (url.startsWith('https://')) {
+    return url.replace('https://', 'wss://');
+  }
+  // Konwertuj http:// na ws:// dla WebSocket
+  if (url.startsWith('http://')) {
+    return url.replace('http://', 'ws://');
+  }
+  return url;
+})();
 
 export const useSocket = () => {
   const socketRef = useRef<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null);
