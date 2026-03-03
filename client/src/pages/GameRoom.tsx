@@ -25,7 +25,6 @@ export const GameRoom = () => {
     isConnected,
     messages,
     players,
-    currentTurn,
     connect,
     disconnect,
     joinGame,
