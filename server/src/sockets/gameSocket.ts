@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import prisma from '../services/prisma';
 import { aiService } from '../services/aiService';
 import { aiRateLimiter } from '../services/rateLimiter';
+import type { Prisma } from '@prisma/client';
 import {
   ServerToClientEvents,
   ClientToServerEvents,
@@ -240,7 +241,7 @@ export class GameSocketHandler {
               type: 'ACTION',
               content: `${participant.character.name} wykonuje akcję: ${action}`,
               action,
-              metadata: { target, params },
+              metadata: { target, params } as Prisma.InputJsonValue,
             },
             include: {
               character: {
@@ -253,14 +254,15 @@ export class GameSocketHandler {
           });
 
           // Wyślij wiadomość do wszystkich w sesji
+          const msg = message as typeof message & { character: { id: string; name: string } | null };
           this.io.to(sessionId).emit('game:message', {
             id: message.id,
             type: message.type,
             content: message.content,
-            author: message.character
+            author: msg.character
               ? {
-                  id: message.character.id,
-                  name: message.character.name,
+                  id: msg.character.id,
+                  name: msg.character.name,
                 }
               : undefined,
             timestamp: message.createdAt.toISOString(),
