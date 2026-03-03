@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import prisma from '../services/prisma';
 import { aiService } from '../services/aiService';
 import { characterGenRateLimiter } from '../services/rateLimiter';

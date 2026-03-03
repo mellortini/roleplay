@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import prisma from '../services/prisma';
 import { generateToken } from '../middleware/auth';
-import { AuthenticatedRequest, LoginCredentials, RegisterCredentials } from '../types';
+import { AuthenticatedRequest } from '../types';
 import { z } from 'zod';
 
 const loginSchema = z.object({

@@ -6,6 +6,7 @@ export interface AuthenticatedRequest extends Request {
     email: string;
     username: string;
   };
+  file?: Express.Multer.File;
 }
 
 export interface LoginCredentials {

@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import prisma from '../services/prisma';
 import { AuthenticatedRequest } from '../types';
 import { z } from 'zod';
-import { GameMode, GameStatus } from '@prisma/client';
 
 const createSessionSchema = z.object({
   name: z.string().min(1, 'Nazwa sesji jest wymagana').max(100),
